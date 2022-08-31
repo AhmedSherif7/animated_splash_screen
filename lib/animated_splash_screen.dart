@@ -1,6 +1,7 @@
 library animated_splash_screen;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 
 enum SplashType { simpleSplash, backgroundScreenReturn }
@@ -69,21 +70,26 @@ class AnimatedSplashScreen extends StatefulWidget {
   /// Here you pass your route that will be browsed
   final String? nextRoute;
 
-  factory AnimatedSplashScreen(
-      {Curve curve = Curves.easeInCirc,
-      Future Function()? function,
-      int duration = 2500,
-      required dynamic splash,
-      required Widget nextScreen,
-      Color backgroundColor = Colors.white,
-      Animatable? customTween,
-      bool centered = true,
-      bool disableNavigation = false,
-      SplashTransition? splashTransition,
-      PageTransitionType? pageTransitionType,
-      Duration? animationDuration,
-      double? splashIconSize,
-      String? nextRoute}) {
+  /// Style for status bar
+  final SystemUiOverlayStyle? statusBarStyle;
+
+  factory AnimatedSplashScreen({
+    Curve curve = Curves.easeInCirc,
+    Future Function()? function,
+    int duration = 2500,
+    required dynamic splash,
+    required Widget nextScreen,
+    Color backgroundColor = Colors.white,
+    Animatable? customTween,
+    bool centered = true,
+    bool disableNavigation = false,
+    SplashTransition? splashTransition,
+    PageTransitionType? pageTransitionType,
+    Duration? animationDuration,
+    double? splashIconSize,
+    String? nextRoute,
+    SystemUiOverlayStyle? statusBarStyle,
+  }) {
     return AnimatedSplashScreen._internal(
       backgroundColor: backgroundColor,
       animationDuration: animationDuration,
@@ -100,6 +106,7 @@ class AnimatedSplashScreen extends StatefulWidget {
       type: SplashType.simpleSplash,
       nextScreen: nextScreen,
       curve: curve,
+      statusBarStyle: statusBarStyle,
     );
   }
 
@@ -116,6 +123,7 @@ class AnimatedSplashScreen extends StatefulWidget {
     PageTransitionType? pageTransitionType,
     Duration? animationDuration,
     double? splashIconSize,
+    SystemUiOverlayStyle? statusBarStyle,
   }) {
     return AnimatedSplashScreen._internal(
       type: SplashType.backgroundScreenReturn,
@@ -133,6 +141,7 @@ class AnimatedSplashScreen extends StatefulWidget {
       nextScreen: null,
       splash: splash,
       curve: curve,
+      statusBarStyle: statusBarStyle,
     );
   }
 
@@ -149,6 +158,7 @@ class AnimatedSplashScreen extends StatefulWidget {
     PageTransitionType? pageTransitionType,
     Duration? animationDuration,
     double? splashIconSize,
+    SystemUiOverlayStyle? statusBarStyle,
   }) {
     return AnimatedSplashScreen._internal(
       type: SplashType.backgroundScreenReturn,
@@ -166,25 +176,28 @@ class AnimatedSplashScreen extends StatefulWidget {
       nextScreen: null,
       splash: splash,
       curve: curve,
+      statusBarStyle: statusBarStyle,
     );
   }
 
-  AnimatedSplashScreen._internal(
-      {required this.animationDuration,
-      required this.splashTransition,
-      required this.customAnimation,
-      required this.backgroundColor,
-      required this.transitionType,
-      required this.splashIconSize,
-      required this.nextScreen,
-      required this.function,
-      required this.duration,
-      required this.centered,
-      required this.disableNavigation,
-      required this.splash,
-      required this.curve,
-      required this.type,
-      required this.nextRoute});
+  AnimatedSplashScreen._internal({
+    required this.animationDuration,
+    required this.splashTransition,
+    required this.customAnimation,
+    required this.backgroundColor,
+    required this.transitionType,
+    required this.splashIconSize,
+    required this.nextScreen,
+    required this.function,
+    required this.duration,
+    required this.centered,
+    required this.disableNavigation,
+    required this.splash,
+    required this.curve,
+    required this.type,
+    required this.nextRoute,
+    required this.statusBarStyle,
+  });
 
   @override
   _AnimatedSplashScreenState createState() => _AnimatedSplashScreenState();
@@ -326,6 +339,13 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
   Widget build(BuildContext context) {
     _context = context;
 
-    return Scaffold(backgroundColor: w.backgroundColor, body: getSplash());
+    return Scaffold(
+      backgroundColor: w.backgroundColor,
+      body: getSplash(),
+      appBar: AppBar(
+        toolbarHeight: 0,
+        systemOverlayStyle: widget.statusBarStyle,
+      ),
+    );
   }
 }
