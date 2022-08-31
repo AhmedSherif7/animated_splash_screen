@@ -344,6 +344,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
       body: getSplash(),
       appBar: AppBar(
         toolbarHeight: 0,
+        elevation: 0,
         systemOverlayStyle: widget.statusBarStyle,
       ),
     );
